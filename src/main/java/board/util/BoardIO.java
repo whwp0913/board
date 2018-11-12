@@ -12,26 +12,46 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
 import board.code.FileAction;
 import board.domain.BoardVO;
 
+@Component
 public class BoardIO {
 
-	private static final String PATH = "/Users/whwp0913/Board/";
-	// private static final String PATH = "file:./data/board";
-	private static final int LIST_SIZE = 10; // 목록 개수
-	private static StringBuilder str = new StringBuilder();
+	@Autowired
+	private ServletContext context;
 
-	// idx check
-	static {
-		File file = new File(PATH + "post_idx");
+	// private static final String PATH = "/Users/whwp0913/Board/";
+	// private String DATA_PATH = context.getRealPath("/webapp/WEB-INF/data/");
+	private final int LIST_SIZE = 10; // 목록 개수
+	private StringBuilder str = new StringBuilder();
+	private String idxFilePath = null;
+	private String dataDirPath = null;
 
-		if (file.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+	// idx init && check
+	@PostConstruct
+	public void init() {
+
+		String idxDir = context.getRealPath(File.separator + "WEB-INF" + File.separator + "data");
+		String idxfileName = "post_idx";
+
+		idxFilePath = idxDir + File.separator + idxfileName;
+		dataDirPath = idxDir;
+
+		File idxDirFile = new File(idxDir);
+		File idxFile = new File(idxDirFile, idxfileName);
+
+		if (idxDirFile.exists()) {
+			try (BufferedReader br = new BufferedReader(new FileReader(idxFilePath))) {
 				str.append(br.readLine());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -39,27 +59,29 @@ public class BoardIO {
 
 		} else {
 			try {
-				file.createNewFile();
+				idxDirFile.mkdirs();
+				idxFile.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+
 	}
 
 	// add idx or delete idx
-	public static synchronized void postIDX(String id, FileAction action) {
+	public synchronized void postIDX(String id, FileAction action) {
 		if (action == FileAction.create) {
-			try (FileWriter fw = new FileWriter(PATH + "post_idx", true)) {
+			try (FileWriter fw = new FileWriter(idxFilePath, true)) {
 				str.append(id + "|");
 				fw.write(id + "|");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else if (action == FileAction.delete) {
-			try (FileWriter fw = new FileWriter(PATH + "post_idx", false)) {
+			try (FileWriter fw = new FileWriter(idxFilePath, false)) {
 				// 삭제할 board -> uuid|
 				int startIdx = StringUtils.ordinalIndexOf(str, id, 1);
-				int endIdx = startIdx+id.length()+1;
+				int endIdx = startIdx + id.length() + 1;
 
 				str.delete(startIdx, endIdx);
 				fw.write(str.toString());
@@ -70,11 +92,11 @@ public class BoardIO {
 	}
 
 	// add board file
-	public static void createFile(BoardVO vo) {
+	public void createFile(BoardVO vo) {
 		String id = UUID.randomUUID().toString();
 		Gson gson = new Gson();
 
-		try (FileWriter fw = new FileWriter(new File(PATH + id))) {
+		try (FileWriter fw = new FileWriter(dataDirPath + File.separator + id)) {
 			vo.setId(id);
 			fw.write(gson.toJson(vo));
 			postIDX(id, FileAction.create);
@@ -84,11 +106,11 @@ public class BoardIO {
 	}
 
 	// read board file
-	public static BoardVO selectFile(String id) {
+	public BoardVO selectFile(String id) {
 		BoardVO vo = new BoardVO();
 		Gson gson = new Gson();
 
-		try (BufferedReader br = new BufferedReader(new FileReader(PATH + id))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(dataDirPath + File.separator + id))) {
 			String str = br.readLine();
 			vo = gson.fromJson(str, BoardVO.class);
 		} catch (Exception e) {
@@ -98,11 +120,11 @@ public class BoardIO {
 	}
 
 	// update board file
-	public static void updateFile(BoardVO vo) {
+	public void updateFile(BoardVO vo) {
 		vo.setUpdate(new SimpleDateFormat("yyyy.MM.dd hh:mm").format(Calendar.getInstance().getTime()));
 		Gson gson = new Gson();
-		
-		try (FileWriter fw = new FileWriter(new File(PATH + vo.getId()))) {
+
+		try (FileWriter fw = new FileWriter(new File(dataDirPath + File.separator + vo.getId()))) {
 			fw.write(gson.toJson(vo));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -110,8 +132,8 @@ public class BoardIO {
 	}
 
 	// delete board file
-	public static void deleteFile(String id) {
-		File file = new File(PATH + id);
+	public void deleteFile(String id) {
+		File file = new File(dataDirPath + File.separator + id);
 		if (file.exists()) {
 			file.delete();
 			postIDX(id, FileAction.delete);
@@ -119,7 +141,7 @@ public class BoardIO {
 	}
 
 	// list board file
-	public static List<BoardVO> listFile(int page) {
+	public List<BoardVO> listFile(int page) {
 
 		// data 역순정렬 (DESC)
 		String temp = StringUtils.reverseDelimited(str.toString(), '|');
@@ -164,7 +186,7 @@ public class BoardIO {
 
 		for (String i : listFile) {
 
-			try (BufferedReader br = new BufferedReader(new FileReader(PATH + i))) {
+			try (BufferedReader br = new BufferedReader(new FileReader(dataDirPath + File.separator + i))) {
 				Gson gson = new Gson();
 				BoardVO vo = gson.fromJson(br.readLine(), BoardVO.class);
 				boardList.add(vo);
@@ -176,7 +198,7 @@ public class BoardIO {
 		return boardList;
 	}
 
-	public static int count() {
+	public int count() {
 		String data = str.toString();
 		int count = StringUtils.countMatches(data, "|");
 		if (count < 0) {

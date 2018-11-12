@@ -2,6 +2,7 @@ package board.dao;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import board.domain.BoardVO;
@@ -9,29 +10,32 @@ import board.util.BoardIO;
 
 @Repository
 public class BoardDAO {
+	
+	@Autowired
+	private BoardIO boardIO;
 
 	public void insert(BoardVO vo) {
-		BoardIO.createFile(vo);
+		boardIO.createFile(vo);
 	}
 
 	public void delete(String id) {
-		BoardIO.deleteFile(id);
+		boardIO.deleteFile(id);
 	}
 
 	public void update(BoardVO vo) {
-		BoardIO.updateFile(vo);
+		boardIO.updateFile(vo);
 	}
 
 	public List<BoardVO> selectList(int page) {
-		return BoardIO.listFile(page);
+		return boardIO.listFile(page);
 	}
 	
 	public int count() {
-		return BoardIO.count();
+		return boardIO.count();
 	}
 
 	public BoardVO select(String id) {
-		return BoardIO.selectFile(id);
+		return boardIO.selectFile(id);
 	}
 
 }

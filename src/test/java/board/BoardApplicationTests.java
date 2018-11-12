@@ -1,7 +1,10 @@
 package board;
 
 
+import java.io.File;
 import java.io.IOException;
+
+import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +21,10 @@ public class BoardApplicationTests {
 	
 	@Autowired
 	BoardDAO dao;
-
+	
+	@Autowired
+	ServletContext context;
+	
 	@Test
 	public void contextLoads() {
 	}
@@ -63,11 +69,12 @@ public class BoardApplicationTests {
 	// file List test
 	@Test
 	public void listTest()throws Exception {
-		
-		
-		System.out.println(dao.selectList(5));
-		
-		
-		
+		System.out.println(dao.selectList(5));	
+	}
+	
+	@Test
+	public void getPath() {
+		String filePath = context.getRealPath(File.separator+"WEB-INF"+File.separator+"data");
+		System.out.println(filePath);
 	}
 }
