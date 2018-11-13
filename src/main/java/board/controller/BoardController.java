@@ -15,27 +15,26 @@ import board.dao.BoardDAO;
 import board.domain.BoardVO;
 
 @Controller
-@RequestMapping("/board/*")
+@RequestMapping("/board")
 public class BoardController {
 
 	@Autowired
 	private BoardDAO dao;
-	
+
 	@GetMapping("/write")
 	public void write() {
-		
+
 	}
-	
+
 	@PostMapping("/write")
 	public String postWrite(RedirectAttributes redirectAttr, BoardVO vo) {
 		BoardVO board = vo;
 		String result = "글이 등록되었습니다.";
-		
+
 		dao.insert(board);
 		redirectAttr.addFlashAttribute("message", result);
 		return "redirect:/board/list";
 	}
-	
 
 	@GetMapping("/list")
 	public void list(Model model, @RequestParam(defaultValue = "1", required = false) int page) {
@@ -50,8 +49,14 @@ public class BoardController {
 	}
 
 	@GetMapping("/read")
-	public void read(Model model, @RequestParam String id) {
-		model.addAttribute("board", dao.select(id));
+	public String read(RedirectAttributes redirectAttr, Model model, @RequestParam String id) {
+		if (dao.select(id) != null) {
+			model.addAttribute("board", dao.select(id));
+		} else {
+			redirectAttr.addFlashAttribute("message", "없는 게시물 입니다.");
+			return "redirect:/board/list";
+		}
+		return "board/read";
 	}
 
 	@GetMapping("/modify")

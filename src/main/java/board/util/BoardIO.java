@@ -30,8 +30,6 @@ public class BoardIO {
 	@Autowired
 	private ServletContext context;
 
-	// private static final String PATH = "/Users/whwp0913/Board/";
-	// private String DATA_PATH = context.getRealPath("/webapp/WEB-INF/data/");
 	private final int LIST_SIZE = 10; // 목록 개수
 	private StringBuilder str = new StringBuilder();
 	private String idxFilePath = null;
@@ -109,12 +107,19 @@ public class BoardIO {
 	public BoardVO selectFile(String id) {
 		BoardVO vo = new BoardVO();
 		Gson gson = new Gson();
-
-		try (BufferedReader br = new BufferedReader(new FileReader(dataDirPath + File.separator + id))) {
-			String str = br.readLine();
-			vo = gson.fromJson(str, BoardVO.class);
-		} catch (Exception e) {
-			e.printStackTrace();
+		
+		// file check
+		if (StringUtils.indexOf(str, id) == -1) {
+			return null;
+			
+		} else {
+			try (BufferedReader br = new BufferedReader(new FileReader(dataDirPath + File.separator + id))) {
+				String str = br.readLine();
+				vo = gson.fromJson(str, BoardVO.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				e.toString();
+			}
 		}
 		return vo;
 	}
@@ -206,4 +211,5 @@ public class BoardIO {
 		}
 		return count;
 	}
+	
 }
