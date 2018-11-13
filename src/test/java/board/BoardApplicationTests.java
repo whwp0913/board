@@ -24,7 +24,7 @@ public class BoardApplicationTests {
 	
 	@Autowired
 	ServletContext context;
-	
+/*	
 	@Test
 	public void contextLoads() {
 	}
@@ -77,4 +77,5 @@ public class BoardApplicationTests {
 		String filePath = context.getRealPath(File.separator+"WEB-INF"+File.separator+"data");
 		System.out.println(filePath);
 	}
+	*/
 }
