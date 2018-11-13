@@ -24,11 +24,11 @@ public class BoardApplicationTests {
 	
 	@Autowired
 	ServletContext context;
-/*	
+
 	@Test
 	public void contextLoads() {
 	}
-	
+	/*
 	// file add test
 	@Test
 	public void insertTest()throws IOException {
