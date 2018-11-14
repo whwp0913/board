@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<!-- <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css"/>
-<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap-theme.css"/> -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css"/>
+<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap-theme.css"/>
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"> -->
 <title>Insert title here</title>
 </head>
 <body>
@@ -45,12 +45,9 @@
 	</form>
 	
 </div>
-<!-- <script src="/resources/jquery.js"></script>
+<script src="/resources/jquery.js"></script>
 <script src="/resources/bootstrap/js/bootstrap.min.js"></script>
-<script src="/resources/jquery.validate.min.js"></script> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="/resources/jquery.validate.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	

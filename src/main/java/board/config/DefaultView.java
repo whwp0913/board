@@ -10,7 +10,7 @@ public class DefaultView implements WebMvcConfigurer {
 	// default view 설정 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/*").setViewName("redirect:/board/list");
+		registry.addViewController("/").setViewName("redirect:/board/list");
 		
 		WebMvcConfigurer.super.addViewControllers(registry);
 	}
