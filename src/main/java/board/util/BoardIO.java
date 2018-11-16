@@ -69,6 +69,7 @@ public class BoardIO {
 	// add idx or delete idx
 	public synchronized void postIDX(String id, FileAction action) {
 		if (action == FileAction.create) {
+			// try with resources 구문 > jdk 1.7 version 도입 
 			try (FileWriter fw = new FileWriter(idxFilePath, true)) {
 				str.append(id + "|");
 				fw.write(id + "|");
